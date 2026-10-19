@@ -13,10 +13,12 @@ export default function RootRedirectPage() {
     router.replace(target);
   }, [router]);
 
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "";
+
   return (
     <div className="flex min-h-screen items-center justify-center p-6 text-center">
       <noscript>
-        <meta httpEquiv="refresh" content="0; url=/id/" />
+        <meta httpEquiv="refresh" content={`0; url=${basePath}/id/`} />
       </noscript>
       <div className="max-w-md space-y-4 rounded-xl border border-border bg-surface p-8 shadow-sm">
         <h1 className="font-serif text-2xl font-bold tracking-tight text-ink">

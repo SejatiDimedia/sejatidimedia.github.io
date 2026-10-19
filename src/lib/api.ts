@@ -271,16 +271,16 @@ export async function getPortfolioData(): Promise<PortfolioData> {
   const isCI = Boolean(process.env.CI);
   const hasKey = Boolean(GLIO_API_KEY);
 
-  if (isCI && !hasKey) {
-    throw new Error(
-      "[CI Build Failure] GLIO_API_KEY is missing in CI environment. Aborting build to preserve existing site."
-    );
-  }
-
   if (!hasKey) {
-    console.info(
-      "[Info] No GLIO_API_KEY found in local environment. Using high-fidelity mock data."
-    );
+    if (isCI) {
+      console.warn(
+        "[Notice] GLIO_API_KEY is not yet configured in GitHub Secrets. Building with high-fidelity fallback data so the site deploys on github.io immediately. Add GLIO_API_KEY in Repository Secrets to sync live CMS data."
+      );
+    } else {
+      console.info(
+        "[Info] No GLIO_API_KEY found in local environment. Using high-fidelity mock data."
+      );
+    }
     return mockPortfolioData;
   }
 

@@ -3,7 +3,9 @@ import { MetadataRoute } from "next";
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://timurdian.github.io";
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "https://sejatidimedia.github.io/thenext-portfolio";
   const lastModified = new Date();
 
   return [

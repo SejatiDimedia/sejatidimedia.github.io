@@ -27,12 +27,16 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
-      GLIO_API_URL: ${{ secrets.GLIO_API_URL || 'https://api.glio.example.com' }}
+      GLIO_API_URL: ${{ secrets.GLIO_API_URL || 'https://glio.vercel.app/api/public' }}
       GLIO_API_KEY: ${{ secrets.GLIO_API_KEY }}
       SEJATIDIMEDIA_API_URL: ${{ secrets.SEJATIDIMEDIA_API_URL || 'https://api.sejatidimedia.com' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Setup Pages
+        id: pages
+        uses: actions/configure-pages@v5
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -49,6 +53,8 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build static site with Next.js
+        env:
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
         run: pnpm build
 
       - name: Security Audit - Verify no secret leakage in output
