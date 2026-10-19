@@ -49,9 +49,15 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build static site with Next.js
-        env:
-          NEXT_PUBLIC_BASE_PATH: ${{ endsWith(github.repository, '.github.io') && '' || vars.BASE_PATH || format('/{0}', github.event.repository.name) }}
-        run: pnpm build
+        run: |
+          if [[ "${{ github.repository }}" == *.github.io ]]; then
+            echo "Building for root domain (basePath is empty)"
+            export NEXT_PUBLIC_BASE_PATH=""
+          else
+            export NEXT_PUBLIC_BASE_PATH="${{ vars.BASE_PATH || format('/{0}', github.event.repository.name) }}"
+            echo "Building with basePath: $NEXT_PUBLIC_BASE_PATH"
+          fi
+          pnpm build
 
       - name: Security Audit - Verify no secret leakage in output
         run: |

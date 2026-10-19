@@ -5,7 +5,7 @@ export const dynamic = "force-static";
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl =
     process.env.NEXT_PUBLIC_SITE_URL ||
-    "https://sejatidimedia.github.io/thenext-portfolio";
+    "https://sejatidimedia.github.io";
   const lastModified = new Date();
 
   return [
