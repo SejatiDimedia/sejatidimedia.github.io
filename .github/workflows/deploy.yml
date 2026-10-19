@@ -50,7 +50,7 @@ jobs:
 
       - name: Build static site with Next.js
         env:
-          NEXT_PUBLIC_BASE_PATH: ${{ vars.BASE_PATH || '/thenext-portfolio' }}
+          NEXT_PUBLIC_BASE_PATH: ${{ endsWith(github.repository, '.github.io') && '' || vars.BASE_PATH || format('/{0}', github.event.repository.name) }}
         run: pnpm build
 
       - name: Security Audit - Verify no secret leakage in output
