@@ -1,5 +1,9 @@
 # Personal Portfolio — Timur Dian Radha Sejati
 
+[![Deploy to GitHub Pages](https://github.com/SejatiDimedia/thenext-portfolio/actions/workflows/deploy.yml/badge.svg)](https://github.com/SejatiDimedia/thenext-portfolio/actions/workflows/deploy.yml)
+
+🌐 **Live Website**: [https://sejatidimedia.github.io/thenext-portfolio/](https://sejatidimedia.github.io/thenext-portfolio/)
+
 Situs portofolio personal software engineer berbasis **Next.js (App Router)**, **Tailwind CSS v4**, **Iconify**, dan **Framer Motion**, yang di-export statis dan di-deploy otomatis ke **GitHub Pages**.
 
 ---
