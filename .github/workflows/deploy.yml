@@ -1,0 +1,79 @@
+name: Deploy Portfolio to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  schedule:
+    # Trigger rebuild every 6 hours to fetch fresh content
+    - cron: "0 */6 * * *"
+  repository_dispatch:
+    # Trigger rebuild when content changes in Glio or SejatiDimedia
+    types:
+      - content-updated
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+      GLIO_API_URL: ${{ secrets.GLIO_API_URL || 'https://api.glio.example.com' }}
+      GLIO_API_KEY: ${{ secrets.GLIO_API_KEY }}
+      SEJATIDIMEDIA_API_URL: ${{ secrets.SEJATIDIMEDIA_API_URL || 'https://api.sejatidimedia.com' }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.28.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build static site with Next.js
+        run: pnpm build
+
+      - name: Security Audit - Verify no secret leakage in output
+        run: |
+          echo "Scanning out/ directory for accidental secret leakage..."
+          if [ -n "$GLIO_API_KEY" ]; then
+            if grep -rn "$GLIO_API_KEY" out/ > /dev/null 2>&1; then
+              echo "CRITICAL SECURITY ERROR: GLIO_API_KEY detected in exported output!"
+              exit 1
+            fi
+          fi
+          echo "Security verification passed: No secrets present in static bundle."
+
+      - name: Upload artifact for GitHub Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./out
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
