@@ -58,6 +58,7 @@ jobs:
             echo "Building with basePath: $NEXT_PUBLIC_BASE_PATH"
           fi
           pnpm build
+          touch out/.nojekyll
 
       - name: Security Audit - Verify no secret leakage in output
         run: |
