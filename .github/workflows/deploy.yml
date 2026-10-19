@@ -34,12 +34,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Pages
-        id: pages
-        uses: actions/configure-pages@v5
-        with:
-          enablement: true
-
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -56,7 +50,7 @@ jobs:
 
       - name: Build static site with Next.js
         env:
-          NEXT_PUBLIC_BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          NEXT_PUBLIC_BASE_PATH: ${{ vars.BASE_PATH || '/thenext-portfolio' }}
         run: pnpm build
 
       - name: Security Audit - Verify no secret leakage in output
